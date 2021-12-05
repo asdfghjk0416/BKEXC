@@ -4,9 +4,10 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>BKEXC</title>
+	<title>replit</title>
 	<link href="style.css" rel="stylesheet" type="text/css" />
 	<script src="./node_modules/web3/dist/web3.min.js">
+
 	</script>
 </head>
 
@@ -14,20 +15,18 @@
 	<h1 id="title"> Book Exchange </h1>
 	<hr> Upload and buy books! Start by uploading a valid book to get a free token.
 	<br> <br>
-
   <div class="form">
-
     <div id="fm" style="display:none">
       <hr>
     <form  method="POST"> 
       <h3> Upload Books </h3>
-      Book name: 
+      <label for="bname">Book Name:</label>
       <input type="text" id="Name">  
       <br> <br>  
-      Book link: 
+      <label for="link">Book Link:</label>
       <input type="url" id="Link">
       <br><br>
-      User address:
+      <label for="address">User Address:</label>
       <input type="text" id="add">  
       <br> <br> 
       <button type="submit" id="up"> Submit </button>
@@ -39,13 +38,13 @@
     <hr>  
     <form  method="POST">
       <h3> Buy Books </h3>
-      Book name: 
-      <input type="text" id="Name">  
+      <label for="bname">Book Name:</label>
+     <input type="text" id="Name">  
       <br> <br>  
-      User address:
-      <input type="text" id="add">  
+      <label for="address">User Address:</label>
+     <input type="text" id="add">  
       <br> <br> 
-      <button type="submit" id="up"> Submit </button>
+      <button type="submit" id="by"> Submit </button>
       <br> <br>
     </form> 
     </div>
@@ -54,18 +53,16 @@
     <hr>
     <form method="POST">
       <h3> Mark Spam Books </h3>
-      Book name: 
+      <label for="bname">Book Name:</label>    
       <input type="text" id="Name">  
       <br> <br> 
-      <button type="submit" id="up"> Submit </button>
+      <button type="submit" id="sp"> Submit </button>
       <br> <br>
     </form>
     </div>
     <hr> 
   </div>
-  
 <br> <br>
-
     <button type="submit" form="fm" id="upload" onclick="openUploadBook()">Upload Book</button>
     <button type="submit" form="fm1" id="buy" onclick="openBuyBook()">Buy Book</button>
     <button type="submit" form="fm2" id="spam" onclick="openMarkSpam()">Mark Spam Books</button>
