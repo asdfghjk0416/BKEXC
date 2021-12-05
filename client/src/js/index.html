@@ -1,28 +1,75 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Textbook Exchage</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <script src="./node_modules/web3/dist/web3.min.js"></script>
-  </head>
-  <body>
-    <h1> Book Exchange </h1>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>BKEXC</title>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<script src="./node_modules/web3/dist/web3.min.js">
+	</script>
+</head>
+
+<body>
+	<h1 id="title"> Book Exchange </h1>
+	<hr> Upload and buy books! Start by uploading a valid book to get a free token.
+	<br> <br>
+
+  <div class="form">
+
+    <div id="fm" style="display:none">
+      <hr>
+    <form  method="POST"> 
+      <h3> Upload Books </h3>
+      Book name: 
+      <input type="text" id="Name">  
+      <br> <br>  
+      Book link: 
+      <input type="url" id="Link">
+      <br><br>
+      User address:
+      <input type="text" id="add">  
+      <br> <br> 
+      <button type="submit" id="up"> Submit </button>
+      <br> <br>
+    </form>
+    </div>
+
+    <div id="fm1" style="display:none">
+    <hr>  
+    <form  method="POST">
+      <h3> Buy Books </h3>
+      Book name: 
+      <input type="text" id="Name">  
+      <br> <br>  
+      User address:
+      <input type="text" id="add">  
+      <br> <br> 
+      <button type="submit" id="up"> Submit </button>
+      <br> <br>
+    </form> 
+    </div>
+
+    <div id="fm2"  style="display:none">
     <hr>
-    Upload and download any book available on our database! Start by uploading a valid book to get a free token. 
-    <br> <br>
-    <form>  
-Book name: 
-<input type="text" name="Name">  
-<br> <br>  
-Uploader's address:
-<input type="text" name="Course">  
-<br> <br> 
- <input type="file" id="myFile" name="filename">
- <br> <br>
-  <input type="submit", value="Upload Book">
-</form>  
-    <script src="script.js"></script>
-  </body>
+    <form method="POST">
+      <h3> Mark Spam Books </h3>
+      Book name: 
+      <input type="text" id="Name">  
+      <br> <br> 
+      <button type="submit" id="up"> Submit </button>
+      <br> <br>
+    </form>
+    </div>
+    <hr> 
+  </div>
+  
+<br> <br>
+
+    <button type="submit" form="fm" id="upload" onclick="openUploadBook()">Upload Book</button>
+    <button type="submit" form="fm1" id="buy" onclick="openBuyBook()">Buy Book</button>
+    <button type="submit" form="fm2" id="spam" onclick="openMarkSpam()">Mark Spam Books</button>
+
+  <script src="script.js"></script>
+</body>
 </html>
