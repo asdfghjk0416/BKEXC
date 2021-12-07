@@ -11,11 +11,11 @@ contract TBE is ERC20 {
     mapping(address=>uint) public rewardCount;
     mapping(address=>bool) public isBanned;
     mapping (address=>uint) public SpamCount;
-    address SuperUser; //owner 
+    address chairPerson; //owner 
     
     modifier onlySuperUser()
   { 
-      require(msg.sender==SuperUser);
+      require(msg.sender==chairPerson);
       _;
       
   }
@@ -30,7 +30,7 @@ contract TBE is ERC20 {
     
   constructor(uint _supply) ERC20("TextBookExchange","TEXEX"){
     _mint(msg.sender, _supply*(10**decimals()));
-    SuperUser = msg.sender;
+    chairPerson = msg.sender;
     uploadCount[msg.sender] = 0;
     rewardCount[msg.sender] = 10;
   }
@@ -62,7 +62,7 @@ contract TBE is ERC20 {
         return true;
    }
    
-   function removeSpamBooks(address person) payable public onlySuperUser returns(bool) {
+   function removeSpamBooks(address person) payable public returns(bool) {
        require(uploadCount[person]>0);
        uint newBal = balanceOf(person) / 2;
        _burn(person, newBal);

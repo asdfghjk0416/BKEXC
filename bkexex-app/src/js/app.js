@@ -52,9 +52,11 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '#up', function(){ var link = $('#link1').val(), name=$('#name1').val; App.uploadBook(link,name)});
-    $(document).on('click', '#by', function(){ name1=$('#Name').val, address=$('#add').value; App.BuyBook(name1,address)});
-    $(document).on('click', '#sp', function(){ var name = $('#nameS').val(); App.handleSpam(nameS); });
+    $(document).on('click', '#up', function(){ var link = $('#link1').val(), name=$('#name1').val(); App.uploadBook(link,name)});
+    $(document).on('click', '#by', function(){ var name=$('#name').val(), address=$('#link').val(); App.BuyBook(name,address)});
+    // $(document).on('click', '#sp', function(){ var name = $('#nameS').val(); App.handleSpam(name); });
+    $(document).on('click', '#ar', function(){ var address = $('#nameS').val(); App.AdminSpam(address); });
+
   },
 
   populateAddress : function(){
@@ -103,28 +105,6 @@ App = {
           })  
   },
 
-  // web3upload:function(){
-  //   var buyInstance;
-  //   web3.eth.getAccounts(function(error, accounts) {
-  //     var account = accounts[0];
-  //     console.log(account)
-  //     App.contracts.vote.deployed().then(function(instance) {
-  //       buyInstance = instance;
-  //             return buyInstance.UploadBook({from: account});
-  //     }).then(function(result, err){
-  //             if(result){
-  //                if(parseInt(result.receipt.status) == 1)
-  //                alert(" uploaded book successfully")
-  //                else
-  //                alert(" upload book not done successfully due to revert")
-  //                } else {
-  //                console.log(err)
-  //                alert(" upload book failed")
-  //                }   
-  //             })
-  //       })
-  // },
-
   BuyBook:function(name, address){
     console.log(address);
     console.log(name);
@@ -132,29 +112,28 @@ App = {
     var buyInstance;
     web3.eth.getAccounts(function(error, accounts) {
       var account = accounts[0];
-      for (let step = 0; step < books.length; step++) {
-        if (books[step].name==name){
-          books[step].sold = true;
-        }
-      }
+      // for (let step = 0; step < books.length; step++) {
+      //   if (books[step].name==name){
+      //     books[step].sold = true;
+      //   }
+      // }
       console.log(account);
       App.contracts.vote.deployed().then(function(instance) {
         buyInstance = instance;
               return buyInstance.BuyBook({from: account});
       }).then(function(result, err){
-        console.err(err)
-              console.log('hello');
+              // console.log('hello');
               if(result){
                  if(parseInt(result.receipt.status) == 1)
-                //  alert(" bought book successfully")
-                  alert("number of tokens:")
+                 alert(" bought book successfully")
+                  // alert("number of tokens:")
                  else
                  alert("buyBook not done successfully due to revert")
                  } else {
                  console.log(err)
                  alert(" buy book failed")
                  }   
-              })
+          })
     })
   },
   //shows the current balance
@@ -168,7 +147,7 @@ App = {
           return numInstance.balanceOf(account)
         }).then(function(res){
             console.log(res);
-            jQuery('#tok').val(res);
+            jQuery('#tok').val(web3.fromWei(res, 'ether'));
           }).catch(function(err){
             console.log(err.message);
           })
@@ -209,28 +188,28 @@ App = {
         })
     },   
   
-      handleSpam:function(addr){
-        console.log(addr)
-        var spamInstance;
-        web3.eth.getAccounts(function(error, accounts) {
-        var account = accounts[0];
-        //update json part here to remove the book reported as spam
-        App.contracts.vote.deployed().then(function(instance) {
-        spamInstance = instance;
-              return spamInstance.removeSpamBooks(addr, {from: account});
-        }).then(function(result, err){
-              if(result){
-                 if(parseInt(result.receipt.status) == 1)
-                 alert(addr + " uploaded book successfully")
-                 else
-                 alert(addr + " upload book not done successfully due to revert")
-                 } else {
-                 console.log(err)
-                 alert(addr + " upload book failed")
-                 }   
-              })
-        })
-    },
+    //   handleSpam:function(addr){
+    //     console.log(addr)
+    //     var spamInstance;
+    //     web3.eth.getAccounts(function(error, accounts) {
+    //     var account = accounts[0];
+    //     //update json part here to remove the book reported as spam
+    //     App.contracts.vote.deployed().then(function(instance) {
+    //     spamInstance = instance;
+    //           return spamInstance.removeSpamBooks(addr, {from: account});
+    //     }).then(function(result, err){
+    //           if(result){
+    //              if(parseInt(result.receipt.status) == 1)
+    //              alert(addr + " uploaded book successfully")
+    //              else
+    //              alert(addr + " upload book not done successfully due to revert")
+    //              } else {
+    //              console.log(err)
+    //              alert(addr + " upload book failed")
+    //              }   
+    //           })
+    //     })
+    // },
 
 
   getChairperson : function(){
@@ -244,6 +223,31 @@ App = {
       }else{
         jQuery('#fm3').css('display','block');
       }
+    })
+  },
+
+  AdminSpam:function(addr){
+    var removeSpamInstance;
+    web3.eth.getAccounts(function(error, accounts) {
+      var account = accounts[0];
+      //json part here
+      console.log(account);
+      App.contracts.vote.deployed().then(function(instance) {
+        removeSpamInstance = instance;
+              return removeSpamInstance.removeSpamBooks(addr,{from: account});
+      }).then(function(result, err){
+              // console.log('hello');
+              if(result){
+                 if(parseInt(result.receipt.status) == 1)
+                 alert("remove spam books successfully")
+                  // alert("number of tokens:")
+                 else
+                 alert("buyBook not done successfully due to revert")
+                 } else {
+                 console.log(err)
+                 alert(" buy book failed")
+                 }   
+          })
     })
   },
 
@@ -309,6 +313,14 @@ App = {
 //     })
 //   }
 };
+//prevents page from refreshing when clicking submit
+$("#by").click(function (e) {
+  e.preventDefault();
+});
+
+$("#ar").click(function (e) {
+  e.preventDefault();
+});
 
 $(function() {
   $(window).load(function() {
