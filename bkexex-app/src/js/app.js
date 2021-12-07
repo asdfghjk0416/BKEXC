@@ -44,6 +44,9 @@ App = {
     App.contracts.vote.setProvider(App.web3Provider);
     
     App.getChairperson();
+    App.showNumberofbooks();
+    App.showReward();
+    App.current_bal();
     return App.bindEvents();
   });
   },
@@ -89,6 +92,7 @@ App = {
                 if(result){
                    if(parseInt(result.receipt.status) == 1)
                    alert(" uploaded book successfully")
+                  //  App.showReward(); 
                    else
                    alert(" upload book not done successfully due to revert")
                    } else {
@@ -133,63 +137,87 @@ App = {
           books[step].sold = true;
         }
       }
-      console.log(account)
+      console.log(account);
       App.contracts.vote.deployed().then(function(instance) {
         buyInstance = instance;
               return buyInstance.BuyBook({from: account});
       }).then(function(result, err){
+        console.err(err)
+              console.log('hello');
               if(result){
                  if(parseInt(result.receipt.status) == 1)
-                 alert(" bought book successfully")
+                //  alert(" bought book successfully")
+                  alert("number of tokens:")
                  else
-                 alert(" buyBook not done successfully due to revert")
+                 alert("buyBook not done successfully due to revert")
                  } else {
                  console.log(err)
                  alert(" buy book failed")
                  }   
               })
-    })  
-},
-
-    // buyBook:function(name,address){
-    //   var addr;
-    //   for (let step = 0; step < books.length; step++) {
-    //     if (books[step].uploader == address && books[step].name==name){
-    //       books[step].sold = true;
-    //     }
-    //   }
-    //   //update the json table here
-    //   App.web3Buy()
-    // },
-
-    // web3Buy:function(){
-    //     var uploadInstance;
-    //     web3.eth,getAccounts(function(error, accounts) {
-    //     var account = accounts[0];
-    //     App.contracts.vote.deployed().then(function(instance) {
-    //     uploadInstance = instance;
-    //           return uploadInstance.BuyBook({from: account});
-    //     }).then(function(result, err){
-    //           if(result){
-    //              if(parseInt(result.receipt.status) == 1)
-    //              alert(addr + " uploaded book successfully")
-    //              else
-    //              alert(addr + " upload book not done successfully due to revert")
-    //              } else {
-    //              console.log(err)
-    //              alert(addr + " upload book failed")
-    //              }   
-    //           })
-    //     })
-    // },
-
-      handleSpam:function(addr){
-        var uploadInstance;
-        web3.eth,getAccounts(function(error, accounts) {
+    })
+  },
+  //shows the current balance
+  current_bal:function(){
+      var numInstance;
+      web3.eth.getAccounts(function(error, accounts) {
         var account = accounts[0];
         App.contracts.vote.deployed().then(function(instance) {
-        uploadInstance = instance;
-              return uploadInstance.removeSpamBooks(addr, {from: account});
+          numInstance = instance;
+          //have to fix the decimal places and stuff
+          return numInstance.balanceOf(account)
+        }).then(function(res){
+            console.log(res);
+            jQuery('#tok').val(res);
+          }).catch(function(err){
+            console.log(err.message);
+          })
+        })
+    },   
+  
+  //this function shows the number of books uploaded 
+  showNumberofbooks:function(){
+    var numInstance;
+    web3.eth.getAccounts(function(error, accounts) {
+      var account = accounts[0];
+      App.contracts.vote.deployed().then(function(instance) {
+        numInstance = instance;
+        return numInstance.uploadCountofUser();
+      }).then(function(res){
+          console.log(res);
+          jQuery('#balance').val(res);
+        }).catch(function(err){
+          console.log(err.message);
+        })
+      })
+  },   
+
+    //this function shows the number of books uploaded 
+    showReward:function(){
+      var rewardInstance;
+      web3.eth.getAccounts(function(error, accounts) {
+        var account = accounts[0];
+        App.contracts.vote.deployed().then(function(instance) {
+          rewardInstance = instance;
+          return rewardInstance.booksTillReward();
+        }).then(function(res,err){
+          console.log(res);
+          jQuery('#reward').val(res);
+          }).catch(function(err){
+            console.log(err.message);
+          })
+        })
+    },   
+  
+      handleSpam:function(addr){
+        console.log(addr)
+        var spamInstance;
+        web3.eth.getAccounts(function(error, accounts) {
+        var account = accounts[0];
+        //update json part here to remove the book reported as spam
+        App.contracts.vote.deployed().then(function(instance) {
+        spamInstance = instance;
+              return spamInstance.removeSpamBooks(addr, {from: account});
         }).then(function(result, err){
               if(result){
                  if(parseInt(result.receipt.status) == 1)
@@ -212,74 +240,74 @@ App = {
       App.chairPerson = result.constructor.currentProvider.selectedAddress.toString();
       App.currentAccount = web3.eth.coinbase;
       if(App.chairPerson != App.currentAccount){
-        jQuery('#address_div').css('display','none');
-        jQuery('#register_div').css('display','none');
+        jQuery('#fm3').css('display','none');
       }else{
-        jQuery('#address_div').css('display','block');
-        jQuery('#register_div').css('display','block');
+        jQuery('#fm3').css('display','block');
       }
     })
   },
 
-  handleRegister: function(addr){
-    var voteInstance;
-    web3.eth.getAccounts(function(error, accounts) {
-    var account = accounts[0];
-    App.contracts.vote.deployed().then(function(instance) {
-      voteInstance = instance;
-      return voteInstance.register(addr, {from: account});
-    }).then(function(result, err){
-        if(result){
-            if(parseInt(result.receipt.status) == 1)
-            alert(addr + " registration done successfully")
-            else
-            alert(addr + " registration not done successfully due to revert")
-        } else {
-            alert(addr + " registration failed")
-        }   
-    })
-    })
-},
+//   handleRegister: function(addr){
+//     var voteInstance;
+//     web3.eth.getAccounts(function(error, accounts) {
+//     var account = accounts[0];
+//     App.contracts.vote.deployed().then(function(instance) {
+//       voteInstance = instance;
+//       return voteInstance.register(addr, {from: account});
+//     }).then(function(result, err){
+//         if(result){
+//             if(parseInt(result.receipt.status) == 1)
+//             alert(addr + " registration done successfully")
+//             else
+//             alert(addr + " registration not done successfully due to revert")
+//         } else {
+//             alert(addr + " registration failed")
+//         }   
+//     })
+//     })
+// },
+  //upload count of user
+  //check number of uploads required to get award
 
-  handleVote: function(event) {
-    event.preventDefault();
-    var proposalId = parseInt($(event.target).data('id'));
-    var voteInstance;
+  // handleVote: function(event) {
+  //   event.preventDefault();
+  //   var proposalId = parseInt($(event.target).data('id'));
+  //   var voteInstance;
 
-    web3.eth.getAccounts(function(error, accounts) {
-      var account = accounts[0];
+  //   web3.eth.getAccounts(function(error, accounts) {
+  //     var account = accounts[0];
 
-      App.contracts.vote.deployed().then(function(instance) {
-        voteInstance = instance;
+  //     App.contracts.vote.deployed().then(function(instance) {
+  //       voteInstance = instance;
 
-        return voteInstance.vote(proposalId, {from: account});
-      }).then(function(result, err){
-            if(result){
-                console.log(result.receipt.status);
-                if(parseInt(result.receipt.status) == 1)
-                alert(account + " voting done successfully")
-                else
-                alert(account + " voting not done successfully due to revert")
-            } else {
-                alert(account + " voting failed")
-            }   
-        });
-    });
-  },
+  //       return voteInstance.vote(proposalId, {from: account});
+  //     }).then(function(result, err){
+  //           if(result){
+  //               console.log(result.receipt.status);
+  //               if(parseInt(result.receipt.status) == 1)
+  //               alert(account + " voting done successfully")
+  //               else
+  //               alert(account + " voting not done successfully due to revert")
+  //           } else {
+  //               alert(account + " voting failed")
+  //           }   
+  //       });
+  //   });
+  // },
 
-  handleWinner : function() {
-    console.log("To get winner");
-    var voteInstance;
-    App.contracts.vote.deployed().then(function(instance) {
-      voteInstance = instance;
-      return voteInstance.reqWinner();
-    }).then(function(res){
-    console.log(res);
-      alert(App.names[res] + "  is the winner ! :)");
-    }).catch(function(err){
-      console.log(err.message);
-    })
-  }
+//   handleWinner : function() {
+//     console.log("To get winner");
+//     var voteInstance;
+//     App.contracts.vote.deployed().then(function(instance) {
+//       voteInstance = instance;
+//       return voteInstance.reqWinner();
+//     }).then(function(res){
+//     console.log(res);
+//       alert(App.names[res] + "  is the winner ! :)");
+//     }).catch(function(err){
+//       console.log(err.message);
+//     })
+//   }
 };
 
 $(function() {

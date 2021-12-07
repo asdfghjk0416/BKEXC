@@ -25,6 +25,10 @@
       <!-- <div id="proposalsRow" class="row"> -->
       </div>
     </div>
+    <p>Number of tokens i have: <input type="text" name="user" id="tok"></p>
+    <p>Number of books i uploaded: <input type="text" name="user" id="balance"></p>
+    <p>Number of books I need to upload to get a free token: <input type="text" name="user" id="reward"></p>
+
     <div class="form">
       <div id="fm" >
         <hr>
@@ -62,15 +66,26 @@
       <hr>
       <form>
         <h3> Mark Spam Books </h3>
-        <label for="bname">Uploader's Name</label>    
-        <input type="text" id="NameS">  
+        <label for="bname">Uploader's Address</label>    
+        <input type="text" id="nameS">  
         <br> <br> 
         <button type="submit" id="sp"> Submit </button>
         <br> <br>
       </form>
       </div>
-      <hr> 
-    </div>
+      <div id="fm3" >
+        <form>
+          <h3> Rempve Spam Books </h3>
+          <label for="bname">Uploader's Address</label>    
+          <input type="text" id="nameS">  
+          <br> <br> 
+          <button type="submit" id="sp"> Submit </button>
+          <br> <br>
+        </form>
+        </div>
+        <hr> 
+      </div>
+
 
     <!-- <br> <br>
     <button type="submit" form="fm" id="upload" onclick="openUploadBook();">Upload Book</button>

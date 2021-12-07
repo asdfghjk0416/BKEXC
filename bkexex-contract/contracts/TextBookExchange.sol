@@ -51,6 +51,10 @@ contract TBE is ERC20 {
    function uploadCountofUser() public view ValidUser returns (uint){
        return uploadCount[msg.sender];
    }
+
+   function booksTillReward() public view ValidUser returns (uint){
+       return rewardCount[msg.sender];
+   }
    
    function reward() internal ValidUser returns(bool) {
         _mint(msg.sender,1*(10**decimals()));
