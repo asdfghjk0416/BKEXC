@@ -1,11 +1,11 @@
-var books =[
-  {
-      "uploader" : "",
-      "link": "https://docs.google.com/document/d/1EthPpgha_UjZrB1NlVar6xBDqlcLp-j3WptYL7BJAwE/edit?usp=sharing",
-      "isSpam": false,
-      "name": "CSE426",
-      "sold": false,
-  }]
+// var books =[
+//   {
+//       "uploader" : "",
+//       "link": "https://docs.google.com/document/d/1EthPpgha_UjZrB1NlVar6xBDqlcLp-j3WptYL7BJAwE/edit?usp=sharing",
+//       "isSpam": false,
+//       "name": "CSE426",
+//       "sold": false,
+//   }]
 
 App = {
   web3Provider: null,
@@ -15,6 +15,15 @@ App = {
   chairPerson:null,
   currentAccount:null,
   init: function() {
+    $.getJSON('../books.json', function(data){
+      var table=$('#book');
+      var student='';
+      student+="<table border=1> <tr><th> Book Name </th><th>Uploader Address</th><th> Spam </th><th> Sold </th></tr>";
+      $.each(data, function(key,value){
+        student+="<tr><td>" + value.name +"</td><td>" + value.uploader + "</td><td>"+ value.isSpam + "</td><td>" + value.sold +"</td></tr>";
+      });
+      table.append(student);
+    });
     return App.initWeb3();
   },
 
@@ -53,7 +62,8 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '#up', function(){ var link = $('#link1').val(), name=$('#name1').val(); App.uploadBook(link,name)});
-    $(document).on('click', '#by', function(){ var name=$('#name').val(), address=$('#link').val(); App.BuyBook(name,address)});
+    $(document).on('click', '#by', function(){ var name=$('#name').val(); App.BuyBook(name)});
+    $(document).on('click', '#yo', function(){ var recep=$('#c').val(), amt=$('#d').val(); App.transferToken(recep,amt)});
     // $(document).on('click', '#sp', function(){ var name = $('#nameS').val(); App.handleSpam(name); });
     $(document).on('click', '#ar', function(){ var address = $('#nameS').val(); App.AdminSpam(address); });
 
@@ -85,7 +95,12 @@ App = {
           "name": name,
           "sold": false,
         }
-        books.push(newBook)
+        // $.getJSON('../books.json', function(data){
+        // data.push(newBook);
+        // console.log(newBook);
+        // var newData=JSON.stringify(data);
+
+        // });
         console.log(account)
         App.contracts.vote.deployed().then(function(instance) {
           uploadInstance = instance;
@@ -105,8 +120,32 @@ App = {
           })  
   },
 
-  BuyBook:function(name, address){
-    console.log(address);
+  transferToken:function(addr2,amt){
+    var buyInstance;
+    web3.eth.getAccounts(function(error, accounts) {
+      var account = accounts[0];
+      App.contracts.vote.deployed().then(function(instance) {
+        buyInstance = instance;
+        var u = amt * 1000000000000000000
+        return buyInstance.transfer(addr2,u);
+      }).then(function(result, err){
+        // console.log('hello');
+        if(result){
+           if(parseInt(result.receipt.status) == 1)
+           alert(" transfered token successfully")
+            // alert("number of tokens:")
+           else
+           alert("cannot transfer token due to revert")
+           } else {
+           console.log(err)
+           alert(" buy book failed")
+           }   
+    })
+})
+      },
+  
+  BuyBook:function(name){
+    // console.log(address);
     console.log(name);
     //update the json table here
     var buyInstance;
@@ -314,13 +353,34 @@ App = {
 //   }
 };
 //prevents page from refreshing when clicking submit
-$("#by").click(function (e) {
+$("#up").click(function (e) {
   e.preventDefault();
 });
 
-$("#ar").click(function (e) {
+$("#by").click(function (e) {
   e.preventDefault();
 });
+$("#by").click(function (e) {
+  e.preventDefault();
+});
+$("#yo").click(function (e) {
+  e.preventDefault();
+});
+
+$(document).ready(function () {
+  $.getJSON("books.json",
+  function (data) {
+  var student = '';
+  student+="<table border=1><tr><th>Book Name</th> <th>Uploader's address</th></tr>"
+  $.each(data, function (key, value) {
+  student += "<tr><td>" +
+  value.name + "</td>";
+  student += "<td>" +
+  value.address + "</td></tr>";
+  });
+  $('#book_table').append(student);
+  });
+  });
 
 $(function() {
   $(window).load(function() {
